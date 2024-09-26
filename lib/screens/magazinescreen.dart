@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:universal_html/html.dart' as html;
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class MagazinePage extends StatefulWidget {
   const MagazinePage({Key? key}) : super(key: key);
@@ -30,13 +31,15 @@ class _MagazinePageState extends State<MagazinePage> {
     ];
 
     Future<void> downloadPDF() async {
-      final url = Uri.parse('http://3.7.73.205/main.pdf');
-      if (await canLaunchUrl(url)) {
-        await launchUrl(url, mode: LaunchMode.externalApplication);
+      const url = 'http://3.7.73.205/main.pdf';
+      if (kIsWeb) {
+        html.window.open(url, '_blank');
       } else {
-        // Handle error: show a snackbar or dialog
+        // For mobile platforms, you might want to use a plugin like url_launcher
+        // or implement a custom solution to download and open the PDF
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Could not launch $url')),
+          const SnackBar(
+              content: Text('PDF download not implemented for this platform')),
         );
       }
     }
